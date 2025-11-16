@@ -1,4 +1,4 @@
-DOCKERHUB_USER ?= toilatung2001
+DOCKERHUB_USER ?= tuilatung2001
 APP_NAME       ?= todo-list-fe
 BUILD_NUMBER   ?= 0.0.1
 BE_HOST        ?= http://localhost:3000
