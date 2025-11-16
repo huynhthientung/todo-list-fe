@@ -4,7 +4,6 @@ pipeline {
     environment {
         DOCKERHUB = credentials('d87db04c-92b2-4ade-ab17-ceba28868239')  // Jenkins credential ID: username + password
         APP_NAME = 'todo-list-fe'
-        IMAGE_TAG = "${BUILD_NUMBER}"
     }
 
     stages {
@@ -30,18 +29,36 @@ pipeline {
 
         stage('Build') {
             steps {
-                sh "make build DOCKERHUB_USER=$DOCKERHUB_USR"
+                script {
+                    if (env.BRANCH_NAME == 'main') {
+                        echo "Building PROD image"
+                        sh "make build-prod DOCKERHUB_USER=$DOCKERHUB_USR"
+                    } else {
+                        echo "Building DEV image"
+                        sh "make build DOCKERHUB_USER=$DOCKERHUB_USR"
+                    }
+                }
             }
         }
 
         stage('Push') {
             steps {
-                sh '''
-                    echo "$DOCKERHUB_PSW" | docker login -u "$DOCKERHUB_USR" --password-stdin
-                '''
-                sh "make push DOCKERHUB_USER=$DOCKERHUB_USR"
+                script {
+                    sh '''
+                        echo "$DOCKERHUB_PSW" | docker login -u "$DOCKERHUB_USR" --password-stdin
+                    '''
+
+                    if (env.BRANCH_NAME == 'main') {
+                        echo "Pushing PROD image"
+                        sh "make push-prod DOCKERHUB_USER=$DOCKERHUB_USR"
+                    } else {
+                        echo "Pushing DEV image"
+                        sh "make push DOCKERHUB_USER=$DOCKERHUB_USR"
+                    }
+                }
             }
         }
+
 
         stage('Deploy') {
             steps {
@@ -64,8 +81,7 @@ pipeline {
                     sh """
                         helm upgrade --install ${APP_NAME} deploy/${APP_NAME} \
                             --namespace ${namespace} \
-                            --set image.repository=${DOCKERHUB_USR}/${APP_NAME} \
-                            --set image.tag=${IMAGE_TAG}
+                            --set image.repository=${DOCKERHUB_USR}/${APP_NAME}
                     """
                 }
             }
