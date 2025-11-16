@@ -2,8 +2,7 @@ pipeline {
     agent any
 
     environment {
-        DOCKERHUB_USER = credentials('dockerhub-user')  // Jenkins credential: username + password
-        DOCKERHUB_PASS = credentials('dockerhub-pass')
+        DOCKERHUB = credentials('d87db04c-92b2-4ade-ab17-ceba28868239')  // Jenkins credential: username + password
     }
 
     stages {
@@ -16,7 +15,7 @@ pipeline {
 
         stage('Push') {
             steps {
-                sh "echo ${DOCKERHUB_PASS} | docker login -u ${DOCKERHUB_USER} --password-stdin"
+                echo "$DOCKERHUB_PSW" | docker login -u "$DOCKERHUB_USR" --password-stdin
                 sh "make push"
             }
         }
