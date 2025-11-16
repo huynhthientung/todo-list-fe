@@ -6,6 +6,7 @@ IMAGE_VERSION  ?= 0.0.3
 PROD_VERSION   ?= 0.1.0
 
 IMAGE          ?= $(DOCKERHUB_USER)/$(APP_NAME):$(IMAGE_VERSION)
+IMAGE_VERSION   ?= $(DOCKERHUB_USER)/$(APP_NAME):latest
 
 PROD_IMAGE     ?= $(DOCKERHUB_USER)/$(APP_NAME):$(PROD_VERSION)
 PROD_LATEST    ?= $(DOCKERHUB_USER)/$(APP_NAME):latest
@@ -20,7 +21,7 @@ build:
 	docker build -t $(IMAGE) \
 		--build-arg VITE_BE_HOST=$(BE_HOST) \
 		.
-	docker tag $(IMAGE)
+	docker tag $(IMAGE) $(DOCKERHUB_USER)/$(APP_NAME):${IMAGE_VERSION}
 
 ## Push dev images
 push:
