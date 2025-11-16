@@ -12,8 +12,18 @@ pipeline {
         stage('Init') {
             steps {
                 script {
-                    env.BRANCH_NAME = sh(script: "git rev-parse --abbrev-ref HEAD", returnStdout: true).trim()
-                    echo "Detected branch: ${env.BRANCH_NAME}"
+                    // Try Jenkins-provided GIT_BRANCH first
+                    if (env.GIT_BRANCH) {
+                        env.BRANCH_NAME = env.GIT_BRANCH.replace('origin/', '').trim()
+                    } else {
+                        // Fallback: direct Git detection (may return HEAD if detached)
+                        env.BRANCH_NAME = sh(
+                            script: "git rev-parse --abbrev-ref HEAD",
+                            returnStdout: true
+                        ).trim()
+                    }
+
+                    echo "Effective BRANCH_NAME: ${env.BRANCH_NAME}"
                 }
             }
         }
@@ -52,9 +62,9 @@ pipeline {
                             namespace = "dev"
                     }
                     sh """
-                        helm upgrade --install ${APP_NAME} deploy/${APP_NAME} \\
-                            --namespace ${namespace} \\
-                            --set image.repository=${DOCKERHUB_USR}/${APP_NAME} \\
+                        helm upgrade --install ${APP_NAME} deploy/${APP_NAME} \
+                            --namespace ${namespace} \
+                            --set image.repository=${DOCKERHUB_USR}/${APP_NAME} \
                             --set image.tag=${IMAGE_TAG}
                     """
                 }
