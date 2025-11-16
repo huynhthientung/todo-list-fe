@@ -2,10 +2,10 @@ DOCKERHUB_USER ?= tuilatung2001
 APP_NAME       ?= todo-list-fe
 BE_HOST        ?= http://localhost:3000
 
-IMAGE_VERSION  ?= 0.0.2
+DEV_VERSION    ?= 0.0.2
 PROD_VERSION   ?= 0.1.0
 
-IMAGE          ?= $(DOCKERHUB_USER)/$(APP_NAME):$(IMAGE_VERSION)
+IMAGE          ?= $(DOCKERHUB_USER)/$(APP_NAME):$(DEV_VERSION)
 
 PROD_IMAGE     ?= $(DOCKERHUB_USER)/$(APP_NAME):$(PROD_VERSION)
 PROD_LATEST    ?= $(DOCKERHUB_USER)/$(APP_NAME):latest
@@ -20,7 +20,7 @@ build:
 	docker build -t $(IMAGE) \
 		--build-arg VITE_BE_HOST=$(BE_HOST) \
 		.
-	docker tag $(IMAGE) $(DOCKERHUB_USER)/$(APP_NAME):${IMAGE_VERSION}
+	docker tag $(IMAGE) $(DOCKERHUB_USER)/$(APP_NAME):${DEV_VERSION}
 
 ## Push dev images
 push:
