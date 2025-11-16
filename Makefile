@@ -2,7 +2,7 @@ DOCKERHUB_USER ?= tuilatung2001
 APP_NAME       ?= todo-list-fe
 BE_HOST        ?= http://localhost:3000
 
-DEV_VERSION    ?= 0.0.2
+DEV_VERSION    ?= 0.1.0
 PROD_VERSION   ?= 0.1.0
 
 IMAGE          ?= $(DOCKERHUB_USER)/$(APP_NAME):$(DEV_VERSION)

@@ -23,7 +23,7 @@ Simple React + Vite todo list. Features:
 
 ## Docker
 - Build: `make build` (uses `BE_HOST` to forward into `VITE_BE_HOST`, default `http://localhost:3000`)
-- Run: `docker run -p 8080:80 todo-list-fe:0.0.2` then visit `http://localhost:8080` (served via `serve`, no nginx included)
+- Run: `docker run -p 8080:80 todo-list-fe:0.1.0` then visit `http://localhost:8080` (served via `serve`, no nginx included)
 
 ## Deploy (Helm)
 - Helm chart lives in `deploy/todo-list-fe`.
