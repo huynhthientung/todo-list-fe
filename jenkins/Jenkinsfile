@@ -30,7 +30,7 @@ pipeline {
 
         stage('Build') {
             steps {
-                sh "make build DOCKERHUB_USER=$DOCKERHUB_USR BUILD_NUMBER=$IMAGE_TAG"
+                sh "make build DOCKERHUB_USER=$DOCKERHUB_USR"
             }
         }
 
@@ -39,7 +39,7 @@ pipeline {
                 sh '''
                     echo "$DOCKERHUB_PSW" | docker login -u "$DOCKERHUB_USR" --password-stdin
                 '''
-                sh "make push DOCKERHUB_USER=$DOCKERHUB_USR BUILD_NUMBER=$IMAGE_TAG"
+                sh "make push DOCKERHUB_USER=$DOCKERHUB_USR"
             }
         }
 
