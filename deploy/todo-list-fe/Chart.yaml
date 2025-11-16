@@ -3,4 +3,4 @@ name: todo-list-fe
 description: Helm chart for the todo-list frontend
 type: application
 version: 0.1.0
-appVersion: "0.0.2"
+appVersion: "0.0.3"
