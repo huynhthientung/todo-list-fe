@@ -26,11 +26,28 @@ pipeline {
 
         stage('Deploy') {
             steps {
-                sh """
-                    helm upgrade --install ${APP_NAME} deploy/${APP_NAME} \\
-                        --set image.repository=${DOCKERHUB_USR}/${APP_NAME} \\
-                        --set image.tag=${IMAGE_TAG}
-                """
+                script {
+                    def namespace = "dev"
+                    switch(env.BRANCH_NAME) {
+                        case "develop":
+                            namespace = "dev"
+                            break
+                        case "staging":
+                            namespace = "staging"
+                            break
+                        case "main":
+                            namespace = "prod"
+                            break
+                        default:
+                            namespace = "dev"
+                    }
+                    sh """
+                        helm upgrade --install ${APP_NAME} deploy/${APP_NAME} \\
+                            --namespace ${namespace} \\
+                            --set image.repository=${DOCKERHUB_USR}/${APP_NAME} \\
+                            --set image.tag=${IMAGE_TAG}
+                    """
+                }
             }
         }
 
