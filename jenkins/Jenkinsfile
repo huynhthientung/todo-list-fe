@@ -3,13 +3,15 @@ pipeline {
 
     environment {
         DOCKERHUB = credentials('d87db04c-92b2-4ade-ab17-ceba28868239')  // Jenkins credential ID: username + password
+        APP_NAME = 'todo-list-fe'
+        IMAGE_TAG = "${BUILD_NUMBER}"
     }
 
     stages {
 
         stage('Build') {
             steps {
-                sh "make build"
+                sh "make build DOCKERHUB_USER=$DOCKERHUB_USR BUILD_NUMBER=$IMAGE_TAG"
             }
         }
 
@@ -18,15 +20,20 @@ pipeline {
                 sh '''
                     echo "$DOCKERHUB_PSW" | docker login -u "$DOCKERHUB_USR" --password-stdin
                 '''
-                sh "make push"
+                sh "make push DOCKERHUB_USER=$DOCKERHUB_USR BUILD_NUMBER=$IMAGE_TAG"
             }
         }
 
         stage('Deploy') {
             steps {
-                sh "make deploy"
+                sh """
+                    helm upgrade --install ${APP_NAME} deploy/${APP_NAME} \\
+                        --set image.repository=${DOCKERHUB_USR}/${APP_NAME} \\
+                        --set image.tag=${IMAGE_TAG}
+                """
             }
         }
+
     }
 
     post {

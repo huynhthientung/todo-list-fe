@@ -8,7 +8,7 @@ LATEST_IMAGE   ?= $(DOCKERHUB_USER)/$(APP_NAME):latest
 
 CHART_PATH     ?= helm/$(APP_NAME)
 
-.PHONY: build push deploy
+.PHONY: build push
 
 ## Build docker image
 build:
@@ -23,10 +23,3 @@ push:
 	@echo "Pushing to Docker Hub..."
 	docker push $(IMAGE)
 	docker push $(LATEST_IMAGE)
-
-## Deploy with Helm
-deploy:
-	@echo "Deploying using Helm..."
-	helm upgrade --install $(APP_NAME) $(CHART_PATH) \
-		--set image.repository=$(DOCKERHUB_USER)/$(APP_NAME) \
-		--set image.tag=$(BUILD_NUMBER) \
