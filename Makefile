@@ -3,13 +3,12 @@ APP_NAME       ?= todo-list-fe
 BE_HOST        ?= http://localhost:3000
 
 IMAGE_VERSION  ?= 0.0.2
-PROD_VERSION   ?= prod-$(IMAGE_VERSION)
+PROD_VERSION   ?= 0.1.0
 
 IMAGE          ?= $(DOCKERHUB_USER)/$(APP_NAME):$(IMAGE_VERSION)
-LATEST_IMAGE   ?= $(DOCKERHUB_USER)/$(APP_NAME):latest
 
 PROD_IMAGE     ?= $(DOCKERHUB_USER)/$(APP_NAME):$(PROD_VERSION)
-PROD_LATEST    ?= $(DOCKERHUB_USER)/$(APP_NAME):prod-latest
+PROD_LATEST    ?= $(DOCKERHUB_USER)/$(APP_NAME):latest
 
 CHART_PATH     ?= helm/$(APP_NAME)
 
@@ -21,7 +20,7 @@ build:
 	docker build -t $(IMAGE) \
 		--build-arg VITE_BE_HOST=$(BE_HOST) \
 		.
-	docker tag $(IMAGE) $(LATEST_IMAGE)
+	docker tag $(IMAGE)
 
 ## Push dev images
 push:
